@@ -132,30 +132,6 @@ func getSavePathFromUrl(gitUrl string) string {
 	return ""
 }
 
-func getGitUrlAndSavePath() (string, string) {
-	var gitUrl, savePath string
-	if len(os.Args) > 1 {
-		gitUrl = os.Args[1]
-	}
-	if len(os.Args) > 2 {
-		savePath = os.Args[2]
-	}
-	if len(savePath) > 0 && !path.IsAbs(savePath) {
-		if _path, err := filepath.Abs(savePath); err == nil {
-			savePath = _path
-		}
-	}
-	if len(savePath) == 0 {
-		filename := getSavePathFromUrl(gitUrl)
-		if len(filename) > 0 {
-			if _path, err := filepath.Abs(filename); err == nil {
-				savePath = _path
-			}
-		}
-	}
-	return gitUrl, savePath
-}
-
 func PathExists(filename string) (bool, error) {
 	_, err := os.Stat(filename)
 	if err == nil {
@@ -184,6 +160,14 @@ func main() {
 	if !flag.Parsed() || gitUrl == "" {
 		flag.Usage()
 		os.Exit(-1)
+	}
+	if len(savePath) == 0 {
+		savePath = getSavePathFromUrl(gitUrl)
+	}
+	if len(savePath) > 0 && !path.IsAbs(savePath) {
+		if _path, err := filepath.Abs(savePath); err == nil {
+			savePath = _path
+		}
 	}
 	//fmt.Println(gitUrl, savePath)
 	maxKeyArr := gitListEndTag(gitUrl, endBuild, minBuild, tagsPattern)
