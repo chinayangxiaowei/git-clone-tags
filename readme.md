@@ -11,7 +11,7 @@
 ```
   -end-build
     	calculating the maximum build version (default true)
-  -min-major
+  -min-major int
         filter minimum major version number
   -min-build int
     	filter minimum build version number

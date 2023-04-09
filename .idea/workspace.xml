@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="79429219-20ae-49c5-b31d-d0525fafdb23" name="变更" comment="Fix some bug" />
+    <list default="true" id="79429219-20ae-49c5-b31d-d0525fafdb23" name="变更" comment="change readme" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -128,7 +128,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Fix repository path calculation" />
     <MESSAGE value="Fix some bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix some bug" />
+    <MESSAGE value="change readme" />
+    <option name="LAST_COMMIT_MESSAGE" value="change readme" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
