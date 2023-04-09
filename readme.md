@@ -20,7 +20,7 @@
 
 1. display the final version of each master release and >= min-build
 ```shell
-./git_clone_tags -remote https://chromium.googlesource.com/chromium/src -show-tags -min-build 200 -end-build
+./git_clone_tags -remote https://chromium.googlesource.com/chromium/src -show-tags -min-major 60  -min-build 200 -end-build -repo chromium/src
 ```
 2. Filter versions using matching expressions
 ```shell

@@ -46,9 +46,13 @@ func gitFetchTag(tag string) {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Run()
+	cmd = exec.Command("git", "checkout", "-b", "branch_"+tag, tag)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Run()
 }
 
-func gitListEndTag(gitUrl string, endBuild bool, minBuild int, tagsPattern string) []string {
+func gitListEndTag(gitUrl string, endBuild bool, minMajor int, minBuild int, tagsPattern string) []string {
 	var sortParam string
 	//if endBuild {
 	sortParam = "--sort=version:refname"
@@ -79,23 +83,36 @@ func gitListEndTag(gitUrl string, endBuild bool, minBuild int, tagsPattern strin
 			continue
 		}
 		var sKey string
-		var sVer string
-		var iVer int
+		var sMajorVer string
+		var iMajorVer int
+		var sBuildVer string
+		var iBuildVer int
 		if len(ssArr) == 2 {
 			sKey = ssArr[0]
-			sVer = ssArr[1]
+			sMajorVer = ssArr[0]
+			sBuildVer = ssArr[1]
 		} else if len(ssArr) == 3 {
 			sKey = ssArr[0] + "." + ssArr[1]
-			sVer = ssArr[2]
+			sMajorVer = ssArr[0]
+			sBuildVer = ssArr[2]
 
 		} else if len(ssArr) == 4 {
 			sKey = ssArr[0] + "." + ssArr[1] + "." + ssArr[2]
-			sVer = ssArr[3]
+			sMajorVer = ssArr[0]
+			sBuildVer = ssArr[3]
 		}
-		if v, err := strconv.Atoi(sVer); err == nil {
-			iVer = v
+		if minMajor != 0 {
+			if v, err := strconv.Atoi(sMajorVer); err == nil {
+				iMajorVer = v
+			}
+			if iMajorVer < minMajor {
+				continue
+			}
 		}
-		if iVer < minBuild {
+		if v, err := strconv.Atoi(sBuildVer); err == nil {
+			iBuildVer = v
+		}
+		if iBuildVer < minBuild {
 			continue
 		}
 		if !endBuild {
@@ -109,13 +126,13 @@ func gitListEndTag(gitUrl string, endBuild bool, minBuild int, tagsPattern strin
 			}
 		} else {
 			if v, err1 := strconv.Atoi(verMap[sKey]); err1 == nil {
-				if iVer > v {
+				if iBuildVer > v {
 					verMap[sKey] = ssArr[3]
 				}
 			}
 		}
 		lastKey = sKey
-		lastVer = sVer
+		lastVer = sBuildVer
 	}
 	return maxKeyArr
 }
@@ -149,11 +166,13 @@ func main() {
 	var endBuild bool
 	var tagsPattern string
 	var showTags bool
+	var minMajor int
 	var minBuild int
 	flag.StringVar(&gitUrl, "remote", "", "remote url (needed)")
 	flag.StringVar(&savePath, "repo", "", "repository path")
 	flag.StringVar(&tagsPattern, "tags", "", "tags matching string")
 	flag.BoolVar(&endBuild, "end-build", false, "calculating the maximum build version")
+	flag.IntVar(&minMajor, "min-major", 0, "filter minimum major version number")
 	flag.IntVar(&minBuild, "min-build", 0, "filter minimum build version number")
 	flag.BoolVar(&showTags, "show-tags", false, "display matching tags, but do not clone to local repo")
 	flag.Parse()
@@ -170,7 +189,7 @@ func main() {
 		}
 	}
 	//fmt.Println(gitUrl, savePath)
-	maxKeyArr := gitListEndTag(gitUrl, endBuild, minBuild, tagsPattern)
+	maxKeyArr := gitListEndTag(gitUrl, endBuild, minMajor, minBuild, tagsPattern)
 	if len(maxKeyArr) > 0 {
 		if showTags {
 			for i := 0; i < len(maxKeyArr); i++ {
@@ -183,14 +202,21 @@ func main() {
 			fmt.Println("Failed: ", err.Error())
 			os.Exit(-1)
 		}
-		oldPath, _ := os.Getwd()
-		os.Chdir(savePath)
 		if !isExist {
 			err := os.MkdirAll(savePath, fs.ModePerm)
 			if err != nil {
 				fmt.Println("Failed: ", err.Error())
 				os.Exit(-1)
 			}
+		}
+		oldPath, _ := os.Getwd()
+		err = os.Chdir(savePath)
+		if err != nil {
+			fmt.Println("Failed: ", err.Error())
+			os.Exit(-1)
+		}
+		isExist, err = PathExists(savePath + "/.git")
+		if !isExist {
 			gitInitAndSetRemoteOrigin(gitUrl)
 		}
 		for i := 0; i < len(maxKeyArr); i++ {
