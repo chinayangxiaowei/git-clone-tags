@@ -1,10 +1,18 @@
 # Instructions
     Breakpoint cloning of very large git repositories by fetching tags one by one.
 
+### Build
+```shell
+    # Go to the source code directory
+    go build -o git_clone_tags
+```
+
 ### Usage
 ```
   -end-build
     	calculating the maximum build version (default true)
+  -min-major
+        filter minimum major version number
   -min-build int
     	filter minimum build version number
   -remote string
