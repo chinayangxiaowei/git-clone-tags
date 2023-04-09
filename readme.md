@@ -4,11 +4,14 @@
 ### Build
 ```shell
     # Go to the source code directory
-    go build -o git_clone_tags
+    go build -o git-clone-tags
 ```
 
 ### Usage
 ```
+  git-clone-tags -remote repoAddress -show-tags [-tags matchString] [-end-build] [-min-major n] [-min-build n] 
+  git-clone-tags -remote repoAddress -repo path [-tags matchString] [-end-build] [-min-major n] [-min-build n]
+  
   -end-build
     	calculating the maximum build version (default true)
   -min-major int
@@ -28,7 +31,7 @@
 
 1. display the final version of each master release and >= min-build
 ```shell
-./git_clone_tags -remote https://chromium.googlesource.com/chromium/src -show-tags -min-major 60  -min-build 200 -end-build -repo chromium/src
+./git-clone-tags -remote https://chromium.googlesource.com/chromium/src -show-tags -min-major 60  -min-build 200 -end-build -repo chromium/src
 64.0.3282.204
 65.0.3325.230
 66.0.3359.203
@@ -43,9 +46,9 @@
 ```
 2. Filter versions using matching expressions
 ```shell
-./git_clone_tags -remote https://chromium.googlesource.com/chromium/src -show-tags -tags "100.0.*.*"
+./git-clone-tags -remote https://chromium.googlesource.com/chromium/src -show-tags -tags "100.0.*.*"
 ```
 3. clone the filtered version
 ```shell
-./git_clone_tags -remote https://chromium.googlesource.com/chromium/src  -tags "4.*.*.*" -min-build 200 -repo chromium/src
+./git-clone-tags -remote https://chromium.googlesource.com/chromium/src  -tags "4.*.*.*" -min-build 200 -repo chromium/src
 ```
