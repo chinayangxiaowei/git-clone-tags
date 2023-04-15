@@ -31,7 +31,7 @@
 
 1. display the final version of each master release and >= min-build
 ```shell
-./git-clone-tags -remote https://chromium.googlesource.com/chromium/src -show-tags -min-major 60  -min-build 200 -end-build -repo chromium/src
+./git-clone-tags -remote https://chromium.googlesource.com/chromium/src -show-tags -min-major 60  -min-build 200 -end-build
 64.0.3282.204
 65.0.3325.230
 66.0.3359.203
@@ -43,6 +43,7 @@
 102.0.5005.200
 106.0.5249.225
 108.0.5359.228
+110.0.5481.213
 ```
 2. Filter versions using matching expressions
 ```shell

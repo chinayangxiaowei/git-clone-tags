@@ -123,6 +123,7 @@ func gitListEndTag(gitUrl string, endBuild bool, minMajor int, minBuild int, tag
 			verMap[sKey] = ssArr[3]
 			if lastKey != "" {
 				maxKeyArr = append(maxKeyArr, lastKey+"."+lastVer)
+				lastKey = ""
 			}
 		} else {
 			if v, err1 := strconv.Atoi(verMap[sKey]); err1 == nil {
@@ -133,6 +134,10 @@ func gitListEndTag(gitUrl string, endBuild bool, minMajor int, minBuild int, tag
 		}
 		lastKey = sKey
 		lastVer = sBuildVer
+	}
+	//fix bug, append last version
+	if lastKey != "" {
+		maxKeyArr = append(maxKeyArr, lastKey+"."+lastVer)
 	}
 	return maxKeyArr
 }
